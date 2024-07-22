@@ -37,6 +37,10 @@ const ComplaintDetails = () => {
       message.success('Complaint status updated successfully');
       setSelectedStatus(value);
     } catch (err) {
+      if(err.response.status === 401){
+        message.error('Unauthorized Access');
+        return;
+      }
       message.error('Failed to update complaint status');
       console.error('Failed to update complaint status:', err);
     } finally {

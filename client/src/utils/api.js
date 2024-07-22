@@ -29,9 +29,19 @@ export const login = async (credentials) => {
 
 export const submitComplaint = async (complaintData) => {
   try {
-    const response = await api.post('/complaints', complaintData);
+    const response = await api.post('/complaints', complaintData, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    if(response.status !== 200){
+      throw new Error('Complaint submission failed. Please try again.');
+    }
     return response.data;
   } catch (error) {
+    if(error.response.status === 401){
+      throw new Error('Unauthorized Access. Only Users can create a complaint.');
+    }
     throw error.response.data;
   }
 };
@@ -47,7 +57,11 @@ export const fetchComplaints = async () => {
 
 export const fetchComplaintDetails = async (complaintId) => {
   try {
-    const response = await api.get(`/complaints/${complaintId}`);
+    const response = await api.get(`/complaints/${complaintId}`,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }, 
+    });
     return response.data;
   } catch (error) {
     throw error.response.data;
@@ -56,7 +70,11 @@ export const fetchComplaintDetails = async (complaintId) => {
 
 export const updateComplaintStatus = async (complaintId, status) => {
   try {
-    const response = await api.put(`/complaints/${complaintId}`, { status });
+    const response = await api.put(`/complaints/${complaintId}`, { status }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
     return response.data;
   } catch (error) {
     throw error.response.data;

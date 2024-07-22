@@ -19,7 +19,7 @@ Complaint.create = (newComplaint, result) => {
       result(err, null);
       return;
     }
-    console.log("created complaint: ", { id: res.insertId, ...newComplaint });
+    // console.log("created complaint: ", { id: res.insertId, ...newComplaint });
     result(null, { id: res.insertId, ...newComplaint });
   });
 };
@@ -50,14 +50,14 @@ Complaint.getAll = (result) => {
       result(null, err);
       return;
     }
-    console.log("complaints: ", res);
+    // console.log("complaints: ", res);
     result(null, res);
   });
 };
 
 // Update a Complaint identified by the id in the request
 Complaint.updateById = (id, complaint, result) => {
-  console.log("-----", complaint);
+  // console.log("-----", complaint);
   sql.query(
     "UPDATE complaints SET status = ? WHERE id = ?",
     [complaint.status, id],
@@ -91,7 +91,7 @@ Complaint.remove = (id, result) => {
       result({ kind: "not_found" }, null);
       return;
     }
-    console.log("deleted complaint with id: ", id);
+    // console.log("deleted complaint with id: ", id);
     result(null, res);
   });
 };

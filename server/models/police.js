@@ -6,6 +6,8 @@ const Police = function(police) {
   this._rank = police._rank;
   this.station = police.station;
   this.badge = police.badge;
+  this.email = police.email;
+  this.password = police.password;
 };
 
 Police.create = (newPolice, result) => {
@@ -16,6 +18,24 @@ Police.create = (newPolice, result) => {
       return;
     }
     result(null, { id: res.insertId, ...newPolice });
+  });
+};
+
+Police.findByEmail = (email, result) => {
+  sql.query("SELECT * FROM police WHERE email = ?", [email], (err, res) => {
+      if (err) {
+          console.error("error: ", err);
+          result(err, null);
+          return;
+      }
+
+      if (res.length) {
+          // console.log("found user: ", res[0]);
+          result(null, res);
+          return;
+      }
+
+      result({ kind: "not_found" }, null);
   });
 };
 

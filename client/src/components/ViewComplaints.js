@@ -9,6 +9,7 @@ const API_BASE_URL = 'http://localhost:8000';
 
 const fetchComplaints = async () => {
   try {
+    // console.log("fetchComplaints", localStorage.getItem('token'));
     const response = await axios.get(`${API_BASE_URL}/complaints`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -32,7 +33,7 @@ const ViewComplaints = () => {
         setComplaints(data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch complaints. Please try again later.');
+        setError('Unauthorized Access');
         setLoading(false);
       }
     };
@@ -69,7 +70,7 @@ const ViewComplaints = () => {
       key: 'status',
       render: (status) => (
         <span style={{ 
-          color: status === 'Resolved' ? 'green' : status === 'Pending' ? 'orange' : 'red',
+          color: status === 'Completed' ? 'green' : status === 'In Progress' ? '#20a1f7' : 'red',
           fontWeight: 'bold'
         }}>{status}</span>
       ),
@@ -118,7 +119,11 @@ const ViewComplaints = () => {
   }
 
   if (error) {
-    return <Typography.Text type="danger">{error}</Typography.Text>;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <h1 style={{color:"red"}}>{error}</h1>
+      </div>
+    )
   }
 
   return (

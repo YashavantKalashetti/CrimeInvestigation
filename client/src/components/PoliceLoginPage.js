@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../utils/api';
+import axios from 'axios';
+
+const API_BASE_URL = 'http://localhost:8000';
 
 const PoliceLoginPage = () => {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
-    policeId: '',
+    email: '',
     password: ''
   });
   const [error, setError] = useState('');
@@ -17,8 +20,12 @@ const PoliceLoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await login(loginData, 'police');
-      localStorage.setItem('token', response.token);
+      const response = await axios.post(`${API_BASE_URL}/police/login`, loginData);
+      if(response.status !== 200){
+        setError('Login failed. Please try again.');
+        return;
+      }
+      localStorage.setItem('token', response.data.token);
       navigate('/view-complaints');
     } catch (err) {
       setError(err.message || 'An error occurred during login');
@@ -31,12 +38,12 @@ const PoliceLoginPage = () => {
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="max-w-md mx-auto">
         <div className="mb-4">
-          <label htmlFor="policeId" className="block mb-2">Police ID</label>
+          <label htmlFor="policeId" className="block mb-2">Police Email</label>
           <input
             type="text"
-            id="policeId"
-            name="policeId"
-            value={loginData.policeId}
+            id="email"
+            name="email"
+            value={loginData.email}
             onChange={handleChange}
             className="w-full p-2 border rounded"
             required
@@ -57,6 +64,7 @@ const PoliceLoginPage = () => {
         <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300">
           Login
         </button>
+        {error && <p className="text-red-500 mt-4">{error}</p>}
       </form>
     </div>
   );

@@ -18,6 +18,24 @@ User.create = (newUser, result) => {
   });
 };
 
+User.findByEmail = (email, result) => {
+  sql.query("SELECT * FROM users WHERE email = ?", [email], (err, res) => {
+      if (err) {
+          console.error("error: ", err);
+          result(err, null);
+          return;
+      }
+
+      if (res.length) {
+          console.log("found user: ", res[0]);
+          result(null, res);
+          return;
+      }
+
+      result({ kind: "not_found" }, null);
+  });
+};
+
 User.findById = (id, result) => {
   sql.query(`SELECT * FROM users WHERE id = ${id}`, (err, res) => {
     if (err) {

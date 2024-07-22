@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE_URL = 'http://localhost:8000';
+
 const UserLoginPage = () => {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
@@ -17,14 +19,18 @@ const UserLoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/login', loginData);
-      console.log('Login successful:', response.data);
-      // Store the token in localStorage or a secure cookie
+      const response = await axios.post(`${API_BASE_URL}/users/login`, loginData);
+
+      console.log('Login successful:', response);
+      
       localStorage.setItem('token', response.data.token);
-      navigate('/view-complaints');
+      navigate('/');
+
     } catch (error) {
+
       setError('Login failed. Please check your credentials.');
-      console.error('Login error:', error);
+      console.error('Login error');
+
     }
   };
 
@@ -60,6 +66,7 @@ const UserLoginPage = () => {
         <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300">
           Login
         </button>
+        {error && <p  style={{color:"red"}} >{error}</p>}
       </form>
     </div>
   );

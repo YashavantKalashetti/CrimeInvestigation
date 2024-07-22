@@ -74,7 +74,6 @@ exports.update = (req, res) => {
     return;
   }
 
-  console.log("Updating complaint ----------------------", new Complaint(req.body));
 
   Complaint.updateById(
     req.params.id,

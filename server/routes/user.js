@@ -2,8 +2,10 @@
 module.exports = app => {
     const users = require('../controllers/user.js');
   
+    
     app.post('/users', users.create);
     app.get('/users', users.findAll);
+    app.post('/users/login', users.login);
     app.get('/users/:id', users.findOne);
     app.put('/users/:id', users.update);
     app.delete('/users/:id', users.delete);

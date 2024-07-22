@@ -4,6 +4,7 @@ module.exports = app => {
   
     app.post('/police', police.create);
     app.get('/police', police.findAll);
+    app.post('/police/login', police.login);
     app.get('/police/:id', police.findOne);
     app.put('/police/:id', police.update);
     app.delete('/police/:id', police.delete);

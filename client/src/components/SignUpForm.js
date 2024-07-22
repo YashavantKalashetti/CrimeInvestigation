@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE_URL = 'http://localhost:8000';
+
 const SignUpForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -22,9 +24,15 @@ const SignUpForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/signup', formData);
+
+      const response = await axios.post(`${API_BASE_URL}/users`, formData);
       console.log('Signup successful:', response.data);
-      navigate('/user-login');
+      if(response.status !== 200){
+        setError('Signup failed. Please try again.');
+        return;
+      }
+      navigate('/');
+
     } catch (error) {
       setError('Signup failed. Please try again.');
       console.error('Signup error:', error);
@@ -67,57 +75,6 @@ const SignUpForm = () => {
             id="password"
             name="password"
             value={formData.password}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="address" className="block mb-1">Home Address</label>
-          <textarea
-            id="address"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          ></textarea>
-        </div>
-        <div>
-          <label htmlFor="aadharNumber" className="block mb-1">Aadhar Number</label>
-          <input
-            type="text"
-            id="aadharNumber"
-            name="aadharNumber"
-            value={formData.aadharNumber}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="gender" className="block mb-1">Gender</label>
-          <select
-            id="gender"
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          >
-            <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="mobileNumber" className="block mb-1">Mobile Number</label>
-          <input
-            type="tel"
-            id="mobileNumber"
-            name="mobileNumber"
-            value={formData.mobileNumber}
             onChange={handleChange}
             className="w-full p-2 border rounded"
             required

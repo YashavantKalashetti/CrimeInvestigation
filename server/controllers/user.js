@@ -1,10 +1,18 @@
 // controllers/user.controller.js
 const User = require('../models/user');
 
-exports.create = (req, res) => {
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+exports.create = async (req, res) => {
+
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty!" });
   }
+
+  
+  req.body.password = await bcrypt.hash(req.body.password, 10);
+  // console.log(req.body.password);
 
   const user = new User({
     name: req.body.name,
@@ -18,6 +26,49 @@ exports.create = (req, res) => {
     else res.send(data);
   });
 };
+
+exports.login = async (req, res) => {
+  if (!req.body) {
+    res.status(400).send({ message: "All the necessary fields are required" });
+  }
+
+
+  User.findByEmail(req.body.email, async (err, data) => {
+      if (err) {
+          if (err.kind === "not_found") {
+              return res.status(401).send({ message: `Not found User with email ${req.body.email}.` });
+          } else {
+              return res.status(500).send({ message: "Error retrieving User with email " + req.body.email });
+          }
+      }
+
+      const user = data[0];  // Ensure data[0] exists
+
+      if (!user) {
+          return res.status(401).send({ message: `Not found User with email ${req.body.email}.` });
+      }
+
+      try {
+          const result = await bcrypt.compare(req.body.password, user.password);
+          if (result) {
+              const token = await jwt.sign({
+                  email: user.email,
+                  id: user.id
+              }, "process.env.SECRET_KEY", { expiresIn: '2d' });
+
+              return res.status(200)
+                  .cookie("token", token, { httpOnly: true, secure: true })
+                  .json({ token, msg: "Successfully Logged IN" });
+          } else {
+              return res.status(400).send({ message: "Invalid Password!" });
+          }
+      } catch (error) {
+          console.error("Error during authentication process:", error.message);
+          return res.status(500).send({ message: "Internal server error during authentication." });
+      }
+  });
+
+}
 
 exports.findAll = (req, res) => {
   User.getAll((err, data) => {

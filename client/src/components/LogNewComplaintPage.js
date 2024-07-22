@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, TextField, Container, Typography, Box, Alert } from '@mui/material';
 import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -6,13 +6,24 @@ import dayjs from 'dayjs';
 import { submitComplaint } from '../utils/api';
 import { message } from 'antd';
 
+import { useNavigate } from 'react-router-dom';
+
 const LogNewComplaintPage = () => {
+  const navigate = useNavigate();
   const [type_of_crime, setTypeOfCrime] = useState('');
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/user-login');
+    }
+  },[]);  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

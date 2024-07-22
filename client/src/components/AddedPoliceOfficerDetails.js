@@ -8,7 +8,9 @@ const AddedPoliceOfficerDetails = () => {
     name: '',
     badge: '',
     _rank: '',
-    station: ''
+    station: '',
+    email: '',
+    password: ''
   });
   const [error, setError] = useState('');
 
@@ -87,6 +89,26 @@ const AddedPoliceOfficerDetails = () => {
             value={newOfficer.station}
             onChange={handleInputChange}
             name="station"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            required
+          />
+          <TextField
+            label="Email"
+            value={newOfficer.email}
+            onChange={handleInputChange}
+            name="email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            required
+          />
+          <TextField
+            label="Password"
+            value={newOfficer.password}
+            onChange={handleInputChange}
+            name="password"
             variant="outlined"
             fullWidth
             margin="normal"
